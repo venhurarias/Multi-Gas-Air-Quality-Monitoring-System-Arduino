@@ -1,4 +1,4 @@
-# Multi-Gas & Air Quality Monitoring System
+# Multi-Gas & Air Quality Monitoring System (Arduino)
 
 This project is an Arduino Mega-based **environmental monitoring system** designed to detect and analyze multiple gases, particulate matter, and environmental conditions in real time. It integrates various MQ gas sensors, a particulate matter sensor, temperature/humidity sensing, and GSM communication for alerts.
 
