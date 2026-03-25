@@ -1,24 +1,32 @@
-# Multi-Gas & Air Quality Monitoring System (Arduino)
+# Smart Air Quality Monitoring and Fragrance Control System
 
-This project is an Arduino Mega-based **environmental monitoring system** designed to detect and analyze multiple gases, particulate matter, and environmental conditions in real time. It integrates various MQ gas sensors, a particulate matter sensor, temperature/humidity sensing, and GSM communication for alerts.
+This project is an Arduino Mega-based **advanced air quality monitoring system** that detects multiple gases, particulate matter, and environmental conditions in real time. It also includes an **automatic fragrance (misting) system**, **data logging**, **visual display**, and **SMS alert notifications**.
+
+The system is designed for environments such as **bathrooms, indoor spaces, and industrial areas** where air quality monitoring and odor control are important.
 
 ---
 
 ## Project Overview
 
-The system combines multiple sensors to monitor:
+The system integrates:
 
-- combustible gases  
-- toxic gases  
-- air quality (PM1.0, PM2.5, PM10)  
-- temperature and humidity  
-- volatile organic compounds (VOC)  
+- Multiple **MQ gas sensors**  
+- **PMS7003 particulate sensor**  
+- **DHT11 temperature and humidity sensor**  
+- **VOC detection (digital classification)**  
+- **PIR sensor (human presence detection)**  
+- **Fragrance misting system**  
+- **TFT LCD display (ILI9488)**  
+- **RTC (Real-Time Clock)**  
+- **SD card logging system**  
+- **GSM module for SMS alerts**  
 
-It is designed for:
-- industrial safety monitoring  
-- air pollution analysis  
-- environmental research  
-- smart safety systems  
+It automatically:
+- monitors air quality  
+- detects pollution levels  
+- activates misting system when needed  
+- logs data for analysis  
+- alerts users via SMS  
 
 ---
 
@@ -26,31 +34,30 @@ It is designed for:
 
 ### 🧪 Multi-Gas Detection
 
-The system uses multiple **MQ sensors** to detect different gases:
+Supports multiple MQ sensors:
 
 | Sensor   | Gas Detected                |
 |----------|----------------------------|
 | MQ2      | LPG, Smoke                 |
 | MQ3      | Alcohol                    |
-| MQ4      | Methane (CH₄)              |
-| MQ5      | LPG, Natural Gas           |
+| MQ4      | Methane                    |
+| MQ5      | Natural Gas                |
 | MQ6      | LPG                        |
 | MQ7      | Carbon Monoxide (CO)       |
-| MQ8      | Hydrogen (H₂)              |
+| MQ8      | Hydrogen                   |
 | MQ9      | CO, Methane                |
-| MQ135    | Air Quality (CO₂, NH₃, etc.) |
+| MQ135    | Air Quality (CO₂, NH₃)     |
+| MQ137    | Ammonia (NH₃)              |
 
 ---
 
-### 🌫️ Particulate Matter Monitoring (PMS5003)
+### 🌫️ Particulate Matter Monitoring (PMS7003)
 
 - Measures:
   - PM1.0  
   - PM2.5  
   - PM10  
-- Provides both:
-  - standard concentration  
-  - environmental concentration  
+- Provides real-time dust concentration  
 
 ---
 
@@ -58,73 +65,125 @@ The system uses multiple **MQ sensors** to detect different gases:
 
 - Uses **DHT11 sensor**
 - Displays:
-  - ambient temperature  
-  - relative humidity  
+  - temperature (°C)  
+  - humidity (%)  
 
 ---
 
 ### 🧴 VOC Detection
 
-- Uses digital pins to classify air quality levels:
-  - Clear  
+- Classifies air quality:
+  - Clean  
   - Slight Pollution  
   - Medium Pollution  
   - Heavy Pollution  
 
 ---
 
-### 📡 GSM Alert System
+### 🌬️ Automatic Fragrance System
 
-- Sends SMS alerts using GSM module (Serial1)
-- Can notify users when:
+- Activates misting when:
   - gas levels exceed thresholds  
-  - environmental conditions become unsafe  
+  - odor/pollution detected  
+- Uses:
+  - float sensor (detects empty liquid)  
+  - PIR sensor (only activates when people are present)  
 
 ---
 
-### 🔁 Continuous Monitoring Cycle
+### 📺 TFT Display Interface
 
-- Sensors run in timed cycles:
-  - active reading phase  
-  - sampling interval  
-- Ensures stable and consistent readings  
+- Uses **ILI9488 LCD**
+- Displays:
+  - gas concentrations (PPM)  
+  - particulate values  
+  - VOC status  
+  - temperature & humidity  
+  - real-time clock  
+
+---
+
+### 📅 Real-Time Clock (RTC)
+
+- Uses **DS3231**
+- Displays:
+  - date  
+  - time  
+- Used for:
+  - timestamping logs  
+
+---
+
+### 💾 SD Card Data Logging
+
+- Saves sensor data in CSV format  
+- Organized by:
+  - year/month/day/hour  
+
+Example data:
+MQ2, MQ3, MQ4, MQ5, MQ6, MQ7, MQ8, MQ9, MQ135, MQ137, VOC, PM1.0, PM2.5, PM10, TEMP, HUMID
+
+---
+
+### 📡 GSM Alert System
+
+- Sends SMS alerts when:
+  - air quality becomes unsafe  
+  - fragrance tank is empty  
 
 ---
 
 ## System Workflow
 
 ### 1. Initialization
-- Initializes all MQ sensors  
-- Starts serial communication:
-  - Serial → debug  
-  - Serial1 → GSM  
-  - Serial3 → PMS sensor  
+- Initializes sensors, LCD, RTC, SD card, GSM  
+- Calibrates gas sensors (preset R0 values)  
 
 ---
 
-### 2. Gas Monitoring Cycle
-- Continuously reads:
-  - MQ sensors (gas concentration)  
-  - PMS sensor (particles)  
-  - DHT11 (temperature/humidity)  
+### 2. Continuous Monitoring
+- Reads:
+  - MQ sensors  
+  - PMS7003  
+  - DHT11  
+  - VOC pins  
+  - PIR sensor  
 
 ---
 
-### 3. Data Processing
-- Converts analog readings into gas concentration values  
-- Processes particulate matter data structure  
+### 3. Air Quality Analysis
+- Compares values with thresholds  
+- Identifies unsafe conditions  
 
 ---
 
-### 4. Output
-- Prints all readings via Serial Monitor  
-- Can send alerts via SMS  
+### 4. Action System
+
+#### If pollution detected:
+- Activates **misting system**  
+- Sends **SMS alert**  
+
+#### If tank empty:
+- Sends refill notification  
+
+---
+
+### 5. Display Output
+- Shows:
+  - real-time sensor data  
+  - warnings  
+  - system status  
+
+---
+
+### 6. Data Logging
+- Saves readings to SD card every 30 seconds  
 
 ---
 
 ## Pin Configuration
 
-### Gas Sensors (Analog)
+### Gas Sensors
 
 | Sensor   | Pin |
 |----------|-----|
@@ -134,6 +193,7 @@ The system uses multiple **MQ sensors** to detect different gases:
 | MQ5      | A7  |
 | MQ135    | A8  |
 | MQ6      | A9  |
+| MQ137    | A10 |
 | MQ8      | A11 |
 | MQ9      | A12 |
 | MQ7      | A13 |
@@ -146,47 +206,107 @@ The system uses multiple **MQ sensors** to detect different gases:
 |------------------|-----|
 | DHT11            | 2   |
 | Float Sensor     | 3   |
-| VOC A Pin        | A5  |
-| VOC B Pin        | A4  |
+| PIR Sensor       | 8   |
+| VOC Pins         | A14, A15 |
+
+---
+
+### Actuators
+
+| Component        | Pin |
+|------------------|-----|
+| Misting System   | 22  |
 
 ---
 
 ### Communication
 
-| Device       | Serial Port |
-|--------------|------------|
-| GSM Module   | Serial1    |
-| PMS5003      | Serial3    |
-| Debug Output | Serial     |
+| Device       | Serial |
+|--------------|--------|
+| GSM Module   | Serial1 |
+| PMS7003      | Serial3 |
+| Debug        | Serial  |
+
+---
+
+### Voltage Control
+
+| Function        | Pin |
+|----------------|-----|
+| MQ7 Voltage    | 6   |
+| MQ9 Voltage    | 7   |
+
+---
+
+### SD Card
+
+| Component | Pin |
+|----------|-----|
+| CS       | 44  |
 
 ---
 
 ## Hardware Components
 
 - Arduino Mega 2560  
-- MQ Gas Sensors (MQ2–MQ9, MQ135)  
-- PMS5003 Dust Sensor  
-- DHT11 Temperature & Humidity Sensor  
+- MQ Gas Sensors (MQ2–MQ9, MQ135, MQ137)  
+- PMS7003 Dust Sensor  
+- DHT11 Sensor  
+- PIR Motion Sensor  
+- Float Sensor  
 - GSM Module (SIM800/900)  
-- Float Sensor (liquid level detection)  
-- Power supply (stable 5V required)  
+- ILI9488 TFT LCD  
+- DS3231 RTC Module  
+- SD Card Module  
+- Relay / Misting Device  
 
 ---
 
-## Key Functions
+## Code Reference
 
-### Gas Reading
-- Uses **MQUnifiedsensor library**
-- Reads gas concentration in PPM
-
----
-
-### PMS Data Reading
-- Parses 32-byte data frame from PMS5003  
-- Extracts PM values and particle counts  
+📄 Source code:  
+:contentReference[oaicite:0]{index=0}  
 
 ---
 
-### SMS Sending
-```cpp
-sendSMS(phoneNumber, message);
+## Notes
+
+- MQ sensors require warm-up time  
+- R0 calibration values are pre-configured  
+- MQ7 and MQ9 use alternating voltage cycles (5V / high voltage)  
+- Misting activates only when:
+  - pollution detected  
+  - people present (PIR)  
+  - liquid available  
+
+---
+
+## Limitations
+
+- No cloud integration  
+- Threshold-based detection (no AI)  
+- Requires stable power supply  
+- Sensor calibration may vary by environment  
+
+---
+
+## Summary
+
+This project demonstrates a **complete smart environmental monitoring system** combining:
+
+- multi-gas detection  
+- particulate monitoring  
+- environmental sensing  
+- automated odor control  
+- real-time display  
+- data logging  
+- SMS alerts  
+
+It is suitable for:
+
+- smart bathrooms  
+- indoor air quality monitoring  
+- industrial safety systems  
+- environmental research
+
+![Wiring Diagram](images/multi-gas_air_quality_monitoring.jpg)
